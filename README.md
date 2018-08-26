@@ -54,6 +54,92 @@ bool q_pow(__int64 a,__int64 b)
 }
 ```
 
+## O(log(n)) 素数判定
+目前已知的最快的单个素数判定方法
+
+```c++
+/*
+  Version: 1.0
+  Author: 王峰
+  Date: 2018.8.26
+  Function List:
+	isPrime(long long n)
+  返回值为n是否是质数
+*/
+#include <iostream> 
+#include <cmath>
+
+long long pow_mod(int a, long long d, long long mod) {
+	long long res = 1, k = a;
+	while(d) {
+		if(d & 1) res = (res * k) % mod; 
+		k = k * k % mod;
+		d >>= 1;
+	} 
+	return res;
+}
+bool test(long long n, int a, long long d) {
+	if(n == 2) return true;
+	if(n == a) return true;
+	if((n & 1) == 0) return false;
+	while(!(d & 1)) d = d >> 1;
+	long long t = pow_mod(a, d, n);
+	while((d != n - 1) && (t != 1) && (t != n - 1)) {
+		t = t * t % n;
+		d <<= 1; 
+	}
+	return (t == n - 1 || (d & 1) == 1);
+}
+bool isPrime(long long n) {
+	if(n < 2LL) return false;
+	int a[] = {2, 3, 61};
+	for (int i = 0; i <= 2; ++i) if(!test(n, a[i], n - 1)) return false;
+	return true; 
+} 
+```
+
+## 欧拉筛法求素数表
+时间复杂度 O(n)
+
+```
+/*
+  Version: 1.0
+  Author: 王峰
+  Date: 2018.8.26
+  Function List:
+	get_prime()
+  check[i]表示i是否为合数
+  prime[i]表示第i个质数,i从0开始计数
+*/
+#include<cstdio>
+#include<cstring>
+
+const int MAXN = 10000001;
+const int MAXL = 10000001;
+int prime[MAXN];
+int check[MAXL];
+
+int get_prime() {
+	int tot = 0;
+	memset(check, 0, sizeof(check));
+	for (int i = 2; i < MAXL; ++i) {
+		if (!check[i]){
+	    	prime[tot++] = i;
+		}
+		for (int j = 0; j < tot; ++j) {
+	    	if (i * prime[j] > MAXL) {
+	    		break;
+			}
+	    	check[i*prime[j]] = 1;
+	    	if (i % prime[j] == 0) {
+	      		break;
+			}
+		}
+	}
+	return tot;
+}
+```
+
 ## some else algorithm
 
 ### some else
