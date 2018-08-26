@@ -101,7 +101,7 @@ bool isPrime(long long n) {
 ## 欧拉筛法求素数表
 时间复杂度 O(n)
 
-```
+```c++
 /*
   Version: 1.0
   Author: 王峰
