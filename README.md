@@ -140,6 +140,47 @@ int get_prime() {
 }
 ```
 
+## ST表
+用于快速查询RMQ问题 建表时间复杂度O(log(n))空间复杂度O(log(n)) 查询时间复杂度O(1) 不可动态更改
+
+```c++
+/*
+  Version: 1.0
+  Author: 王峰
+  Date: 2018.8.27
+  Function List:
+	init_table(n) n为原数组a的长度
+	query_table(L, R) 查询原数组内区间[L,R]的最值
+*/
+#include <cstdio>
+#include <algorithm>
+
+using std::min;
+const int N = 1000010;
+
+int table[N][100];
+int lg[N];
+int a[N];
+
+void init_table(int n) {
+	for(int i=0; i<n; i++) table[i][0]=a[i];
+	for(int j=1; (1<<j)<=n; j++) {
+		for(int i=0; i+(1<<j)-1<n; i++) {
+			table[i][j] = min(table[i][j-1],table[i+(1<<(j-1))][j-1]);
+		}
+	} 
+	for(int i=2, k=0; i<=n; i++) {
+		if(i>(1<<k)) k++;
+		lg[i] = k-1;
+	}
+}
+
+int query_table(int L, int R) {
+	int k = lg[R-L+1];
+	return min(table[L][k],table[R-(1<<k)+1][k]); 
+}
+```
+
 ## some else algorithm
 
 ### some else
