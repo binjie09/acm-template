@@ -181,6 +181,39 @@ int query_table(int L, int R) {
 }
 ```
 
+## 树状数组（二叉索引树）模板
+用于求可单点更新的前缀和，时间复杂度O(log(n))
+```c++
+/*
+  Version: 1.0
+  Author: 王峰
+  Date: 2018.8.27
+  Function List:
+	add(k, v) 将数组中的第k个元素的值+v，注意k从1开始计数
+	query(k) 查询profix[k]
+*/
+#include <cstdio>
+
+const int N = 1000010;
+int n; //实际数组的长度 
+long long tree[4*N];
+
+void add(int k, long long v) {
+	while(k<n){
+		tree[k]+=v;
+		k+=(k&-k);	
+	}
+}
+long long query(int k) {
+	long long ans = 0;
+	while(k>0) {
+		ans+=tree[k];
+		k-=k&-k;
+	}
+	return ans;
+}
+```
+
 ## some else algorithm
 
 ### some else
