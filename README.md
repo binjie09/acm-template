@@ -214,6 +214,87 @@ long long query(int k) {
 }
 ```
 
+
+## dijkstra+priority_queue
+用于求单源最短路径，不能处理负环
+```c++
+/*
+  Version: 1.0
+  Author: 王峰
+  Date: 2018.9.3
+  Function List:
+	init(int n) 将带n个点的图初始化
+	addEdge(int from, int to, int dist) 增加一条单向边
+	dijkstra(int s) 求s为源点的最短路
+*/
+#include <cstdio>
+#include <vector>
+#include <queue>
+#include <cstring>
+
+using std::vector;
+using std::priority_queue;
+const int maxn = 1e6+7;
+const int INF = 0x3f3f3f3f;
+
+struct Edge {
+	int from, to, dist;
+};
+
+struct HeapNode {
+	int d, u;
+	bool operator < (const HeapNode& rhs) const {
+		return d > rhs.d;
+	}
+}; 
+
+struct Dijkstra {
+	int n, m;                //点数和边数 
+	vector<Edge> edges;      //边列表 
+	vector<int> G[maxn];     //每个节点出发的边编号， 从0开始编号 
+	bool vis[maxn];          //是否已经标记 
+	int d[maxn];             //s到各个点的距离 
+	//int p[maxn];           //最短路的上一条边 
+	
+	void init(int n) {
+		this->n = n;
+		for(int i=0; i<=n; i++) {
+			G[i].clear();
+		}
+		edges.clear();
+	}
+	
+	void addEdge(int from, int to, int dist) {
+		edges.push_back((Edge){from, to, dist});
+		m = edges.size();
+		G[from].push_back(m-1);
+	}
+	
+	void dijkstra(int s) {
+		priority_queue<HeapNode> Q;
+		for(int i=0; i<=n; i++) d[i] = INF;
+		d[s]=0;
+		memset(vis, 0, sizeof(vis));
+		Q.push((HeapNode){0, s});
+		while(!Q.empty()) {
+			HeapNode x = Q.top(); Q.pop();
+			int u = x.u;
+			if(vis[u]) continue;
+			vis[u] = true;
+			for(int i=0; i<G[u].size(); i++) {
+				Edge & e = edges[G[u][i]];
+				if(d[e.to] > d[u] + e.dist) {
+					d[e.to] = d[u] + e.dist;
+					//p[e.to] = G[u][i];
+					Q.push((HeapNode){d[e.to], e.to});
+				}
+			}
+		}
+	}
+}D;
+```
+
+
 ## some else algorithm
 
 ### some else
