@@ -294,6 +294,88 @@ struct Dijkstra {
 }D;
 ```
 
+##求和线段树模板（RMQ线段树小改即可）
+
+```c++
+/*
+Function List: 
+    Build(1,n,1); 建树 
+    Add(L,C,1,n,1); 点更新 
+    Update(L,R,C,1,n,1); 区间更新 
+    ANS=Query(L,R,1,n,1); 区间查询 
+*/
+
+typedef long long LL;
+
+const int MAXN=1e5+7;
+LL a[MAXN],ans[MAXN<<2],lazy[MAXN<<2];
+
+void PushUp(int rt) {
+    ans[rt]=ans[rt<<1]+ans[rt<<1|1];
+}
+
+void Build(int l,int r,int rt) {
+    if (l==r) {
+        ans[rt]=0;
+        return;
+    }
+    int mid=(l+r)>>1;
+    Build(l,mid,rt<<1);
+    Build(mid+1,r,rt<<1|1);
+    PushUp(rt);
+}
+
+void PushDown(int rt,LL ln,LL rn) {
+    if (lazy[rt]) {
+        lazy[rt<<1]+=lazy[rt];
+        lazy[rt<<1|1]+=lazy[rt];
+        ans[rt<<1]+=lazy[rt]*ln;
+        ans[rt<<1|1]+=lazy[rt]*rn;
+        lazy[rt]=0;
+    }
+}
+
+void Add(int L,int C,int l,int r,int rt)
+{
+    if (l==r)
+    {
+        ans[rt]+=C;
+        return;
+    }
+    int mid=(l+r)>>1;
+    //PushDown(rt,mid-l+1,r-mid); 若既有点更新又有区间更新，需要这句话
+    if (L<=mid)
+        Add(L,C,l,mid,rt<<1);
+    else
+        Add(L,C,mid+1,r,rt<<1|1);
+    PushUp(rt);
+}
+
+void Update(int L,int R,long long C,int l,int r,int rt) {
+    if (L<=l&&r<=R) {
+        ans[rt]+=C*(r-l+1);
+        lazy[rt]+=C;
+        return;
+    }
+    int mid=(l+r)>>1;
+    PushDown(rt,mid-l+1,r-mid);
+    if (L<=mid) Update(L,R,C,l,mid,rt<<1);
+    if (R>mid) Update(L,R,C,mid+1,r,rt<<1|1);
+    PushUp(rt);
+}
+
+LL Query(int L,int R,int l,int r,int rt) {
+    if (L<=l&&r<=R)
+        return ans[rt];
+    int mid=(l+r)>>1;
+    PushDown(rt,mid-l+1,r-mid);
+    LL ANS=0;
+    if (L<=mid) ANS+=Query(L,R,l,mid,rt<<1);
+    if (R>mid) ANS+=Query(L,R,mid+1,r,rt<<1|1);
+    return ANS;
+}
+```
+
 
 ## some else algorithm
 
