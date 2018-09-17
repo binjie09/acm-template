@@ -216,6 +216,7 @@ long long query(int k) {
 
 
 ## dijkstra+priority_queue
+
 用于求单源最短路径，不能处理负环
 ```c++
 /*
@@ -294,7 +295,8 @@ struct Dijkstra {
 }D;
 ```
 
-##求和线段树模板（RMQ线段树小改即可）
+## 求和线段树模板（RMQ线段树小改即可）
+
 
 ```c++
 /*
@@ -373,6 +375,51 @@ LL Query(int L,int R,int l,int r,int rt) {
     if (L<=mid) ANS+=Query(L,R,l,mid,rt<<1);
     if (R>mid) ANS+=Query(L,R,mid+1,r,rt<<1|1);
     return ANS;
+}
+```
+
+## C组合数板子
+
+时间复杂度O(n^2)
+
+```c++
+/*
+  Version: 1.0
+  Author: 王峰
+  Date: 2018.9.17
+*/
+C[1][0] = C[1][1] = 1;
+for (int i = 2; i < N; i++){
+	C[i][0] = 1;
+	for (int j = 1; j < N; j++)
+		C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]);
+}
+```
+
+## 容斥原理
+
+时间复杂度O(n^2)
+
+```c++
+ll ans = 0;
+for(int i=0; i<(1<<tot); i++) {
+
+	int cnt = 0;
+	for(int j=0; j<tot; j++) {
+		if(i&(1<<j)) cnt++;
+    }
+
+    ll tmp = 0;
+
+        /*
+            得到当前状态下的贡献值
+        */
+
+    if(cnt&1) {
+    	ans ++ tmp;
+    } else {
+    	ans -= tmp;
+    }
 }
 ```
 
