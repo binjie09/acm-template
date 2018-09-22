@@ -227,6 +227,7 @@ long long query(int k) {
 	init(int n) 将带n个点的图初始化
 	addEdge(int from, int to, int dist) 增加一条单向边
 	dijkstra(int s) 求s为源点的最短路
+	print(t, s) 打印从s为源点t为终点的一条路径 
 */
 #include <cstdio>
 #include <vector>
@@ -264,6 +265,19 @@ struct Dijkstra {
 		}
 		edges.clear();
 	}
+	
+	/*
+	void print(int t, int s) {
+		int pre = edges[p[t]].from;
+		if(pre==s) {
+			printf("%d ", s);
+			return ;
+		}else{
+			print(pre,s);
+			printf("%d ", pre);	
+		} 
+	}
+	*/
 	
 	void addEdge(int from, int to, int dist) {
 		edges.push_back((Edge){from, to, dist});
