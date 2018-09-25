@@ -394,7 +394,7 @@ LL Query(int L,int R,int l,int r,int rt) {
 
 ## C组合数板子
 
-时间复杂度O(n^2)
+时间复杂度O(2^n)
 
 ```c++
 /*
@@ -437,6 +437,78 @@ for(int i=0; i<(1<<tot); i++) {
 }
 ```
 
+## 主席树
+
+### 主席树：可持久化线段树,
+### 在nlog(n)空内维护多个权值线段树
+### 离线数据结构不支持修改
+
+## 权值线段树模板未更新
+
+
+```c++
+#include <cstdio>
+#include <vector>
+#include <algorithm>
+
+
+
+/*  
+  Version: 1.0
+  Author: 王峰
+  Date: 2018.9.25
+  Function List:
+  本例为查询区间第K大,有一个基于排序去重的哈希,有时间分离出来单独成板.
+*/
+
+using std::lower_bound;
+using std::vector;
+
+const int maxn = 1e5+6;
+int cnt, root[maxn], a[maxn];
+struct node{
+	int l, r, sum;
+}T[maxn*40]; 
+vector<int > v;
+
+int getid(int x) {
+	return lower_bound(v.begin(), v.end(),x)-v.begin()+1;
+}
+
+void update(int l, int r, int &x, int y, int pos) {
+	T[++cnt]=T[y],T[cnt].sum++,x=cnt;
+	if(l==r)return ;
+	int mid=(l+r)/2;
+	if(mid>=pos)update(l, mid, T[x].l, T[y].l, pos);
+	else update(mid+1, r, T[x].r, T[y].r, pos);
+}
+
+int query(int l, int r, int x, int y, int k) {
+	if(l==r) return l;
+	int mid = (l+r)/2;
+	int sum = T[T[y].l].sum - T[T[x].l].sum;
+	if(sum>=k)return query(l, mid, T[x].l, T[y].l, k);
+	else return query(mid+1, r, T[x].r, T[y].r, k-sum);
+} 
+
+int main() {
+	int n, q;
+	scanf("%d%d", &n, &q);
+	for(int i=1; i<=n; i++) {
+		scanf("%d", &a[i]);
+		v.push_back(a[i]);
+	}
+	sort(v.begin(), v.end()),v.erase(unique(v.begin(), v.end()), v.end());
+	for(int i=1; i<=n; i++) update(1, n, root[i], root[i-1], getid(a[i]));
+	for(int i=1; i<=q; i++) {
+		int x, y, k; 
+		scanf("%d%d%d", &x, &y, &k);
+		printf("%d\n", v[query(1,n,root[x-1],root[y],k)-1]);
+	}
+	return 0;
+}
+
+```
 
 ## some else algorithm
 
