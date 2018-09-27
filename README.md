@@ -510,6 +510,23 @@ int main() {
 
 ```
 
+## lucas定理
+
+描述: 直接用就行。。。
+```c++
+/*  
+  Version: 1.0
+  Author: 陈彬杰
+  Date: 2018.9.27
+  Function List:
+  Lucas(n, m, p): 返回 C(n,m) mod p （p为素数）的值。
+*/
+LL Lucas(LL n, LL m, int p)
+{
+  return m ? Lucas(n/p, m/p, p) * comb(n%p, m%p, p) % p : 1;
+}
+```
+
 ## some else algorithm
 
 ### some else
