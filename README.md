@@ -401,12 +401,23 @@ LL Query(int L,int R,int l,int r,int rt) {
   Version: 1.0
   Author: 王峰
   Date: 2018.9.17
+	func list:
+	  init(): 初始化, 不在算法中使用。
+		comb(n, m, mod): 返回组合数C(n,m)对mod取模的结果
 */
-C[1][0] = C[1][1] = 1;
-for (int i = 2; i < N; i++){
-	C[i][0] = 1;
-	for (int j = 1; j < N; j++)
-		C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]);
+const int N = 1000;
+LL C[N][N];
+void init(LL mod) {
+	C[1][0] = C[1][1] = 1;
+	for (int i = 2; i < N; i++){
+		C[i][0] = 1;
+		for (int j = 1; j < N; j++)
+			C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]) % mod;
+	}
+}
+LL comb(int n,int m,int mod) {
+	if (C[1][1] != 1) init(mod); // 初次加载
+	return C[n][m];
 }
 ```
 
@@ -520,6 +531,7 @@ int main() {
   Date: 2018.9.27
   Function List:
   Lucas(n, m, p): 返回 C(n,m) mod p （p为素数）的值。
+	comb(n, m, p): 详见组合数板子
 */
 LL Lucas(LL n, LL m, int p)
 {
