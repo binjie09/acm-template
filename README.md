@@ -11,10 +11,9 @@
 ```
     ```c++
     your code  
-    ```
+```
 ```
 - 其他细则在实践过程中添加
-
 ## 快速幂
 
 简介:介绍算法干啥，哪些情况用的上  
@@ -24,7 +23,7 @@
 
 描述:简要描述算法实现框架（便于找错）。
 
-```c++
+​```c++
 /*
   Version: 1.0
   Author: 徐祥昊
@@ -214,102 +213,9 @@ long long query(int k) {
 }
 ```
 
+## 求和线段树模板
 
-## dijkstra+priority_queue
-
-用于求单源最短路径，不能处理负环
-```c++
-/*
-  Version: 1.0
-  Author: 王峰
-  Date: 2018.9.3
-  Function List:
-	init(int n) 将带n个点的图初始化
-	addEdge(int from, int to, int dist) 增加一条单向边
-	dijkstra(int s) 求s为源点的最短路
-	print(t, s) 打印从s为源点t为终点的一条路径 
-*/
-#include <cstdio>
-#include <vector>
-#include <queue>
-#include <cstring>
-
-using std::vector;
-using std::priority_queue;
-const int maxn = 1e6+7;
-const int INF = 0x3f3f3f3f;
-
-struct Edge {
-	int from, to, dist;
-};
-
-struct HeapNode {
-	int d, u;
-	bool operator < (const HeapNode& rhs) const {
-		return d > rhs.d;
-	}
-}; 
-
-struct Dijkstra {
-	int n, m;                //点数和边数 
-	vector<Edge> edges;      //边列表 
-	vector<int> G[maxn];     //每个节点出发的边编号， 从0开始编号 
-	bool vis[maxn];          //是否已经标记 
-	int d[maxn];             //s到各个点的距离 
-	//int p[maxn];           //最短路的上一条边 
-	
-	void init(int n) {
-		this->n = n;
-		for(int i=0; i<=n; i++) {
-			G[i].clear();
-		}
-		edges.clear();
-	}
-	
-	/*
-	void print(int t, int s) {
-		int pre = edges[p[t]].from;
-		if(pre==s) {
-			printf("%d ", s);
-			return ;
-		}else{
-			print(pre,s);
-			printf("%d ", pre);	
-		} 
-	}
-	*/
-	
-	void addEdge(int from, int to, int dist) {
-		edges.push_back((Edge){from, to, dist});
-		m = edges.size();
-		G[from].push_back(m-1);
-	}
-	
-	void dijkstra(int s) {
-		priority_queue<HeapNode> Q;
-		for(int i=0; i<=n; i++) d[i] = INF;
-		d[s]=0;
-		memset(vis, 0, sizeof(vis));
-		Q.push((HeapNode){0, s});
-		while(!Q.empty()) {
-			HeapNode x = Q.top(); Q.pop();
-			int u = x.u;
-			if(vis[u]) continue;
-			vis[u] = true;
-			for(int i=0; i<G[u].size(); i++) {
-				Edge & e = edges[G[u][i]];
-				if(d[e.to] > d[u] + e.dist) {
-					d[e.to] = d[u] + e.dist;
-					//p[e.to] = G[u][i];
-					Q.push((HeapNode){d[e.to], e.to});
-				}
-			}
-		}
-	}
-}D;
-```
-
-## 求和线段树模板（RMQ线段树小改即可）
+RMQ线段树小改即可
 
 
 ```c++
@@ -392,76 +298,15 @@ LL Query(int L,int R,int l,int r,int rt) {
 }
 ```
 
-## C组合数板子
-
-时间复杂度O(2^n)
-
-```c++
-/*
-  Version: 1.0
-  Author: 王峰
-  Date: 2018.9.17
-	func list:
-	  init(): 初始化, 不在算法中使用。
-		comb(n, m, mod): 返回组合数C(n,m)对mod取模的结果
-*/
-const int N = 1000;
-LL C[N][N];
-void init(LL mod) {
-	C[1][0] = C[1][1] = 1;
-	for (int i = 2; i < N; i++){
-		C[i][0] = 1;
-		for (int j = 1; j < N; j++)
-			C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]) % mod;
-	}
-}
-LL comb(int n,int m,int mod) {
-	if (C[1][1] != 1) init(mod); // 初次加载
-	return C[n][m];
-}
-```
-
-## 容斥原理
-
-时间复杂度O(n^2)
-
-```c++
-ll ans = 0;
-for(int i=0; i<(1<<tot); i++) {
-
-	int cnt = 0;
-	for(int j=0; j<tot; j++) {
-		if(i&(1<<j)) cnt++;
-    }
-
-    ll tmp = 0;
-
-        /*
-            得到当前状态下的贡献值
-        */
-
-    if(cnt&1) {
-    	ans ++ tmp;
-    } else {
-    	ans -= tmp;
-    }
-}
-```
-
 ## 主席树
 
-### 主席树：可持久化线段树,
-### 在nlog(n)空内维护多个权值线段树
-### 离线数据结构不支持修改
-
-## 权值线段树模板未更新
+主席树：可持久化线段树, 在nlog(n)空内维护多个权值线段树 离线数据结构不支持修改
 
 
 ```c++
 #include <cstdio>
 #include <vector>
 #include <algorithm>
-
 
 
 /*  
@@ -521,23 +366,146 @@ int main() {
 
 ```
 
-## lucas定理
+## dijkstra+priority_queue
 
-描述: 直接用就行。。。
+用于求单源最短路径，不能处理负环
 ```c++
-/*  
+/*
   Version: 1.0
-  Author: 陈彬杰
-  Date: 2018.9.27
+  Author: 王峰
+  Date: 2018.9.3
   Function List:
-  Lucas(n, m, p): 返回 C(n,m) mod p （p为素数）的值。
-	comb(n, m, p): 详见组合数板子
+	init(int n) 将带n个点的图初始化
+	addEdge(int from, int to, int dist) 增加一条单向边
+	dijkstra(int s) 求s为源点的最短路
+	print(t, s) 打印从s为源点t为终点的一条路径 
 */
-LL Lucas(LL n, LL m, int p)
-{
-  return m ? Lucas(n/p, m/p, p) * comb(n%p, m%p, p) % p : 1;
+#include <cstdio>
+#include <vector>
+#include <queue>
+#include <cstring>
+
+using std::vector;
+using std::priority_queue;
+const int maxn = 1e6+7;
+const int INF = 0x3f3f3f3f;
+
+struct Edge {
+	int from, to, dist;
+};
+
+struct HeapNode {
+	int d, u;
+	bool operator < (const HeapNode& rhs) const {
+		return d > rhs.d;
+	}
+}; 
+
+struct Dijkstra {
+	int n, m;                //点数和边数 
+	vector<Edge> edges;      //边列表 
+	vector<int> G[maxn];     //每个节点出发的边编号， 从0开始编号 
+	bool vis[maxn];          //是否已经标记 
+	int d[maxn];             //s到各个点的距离 
+	//int p[maxn];           //最短路的上一条边 
+	
+	void init(int n) {
+		this->n = n;
+		for(int i=0; i<=n; i++) {
+			G[i].clear();
+		}
+		edges.clear();
+	}
+	
+	/*
+	void print(int t, int s) {
+		int pre = edges[p[t]].from;
+		if(t==s) {
+			printf("%d ", s);
+			return ;
+		}else{
+			print(pre,s);
+			printf("%d ", t);
+		}
+	}
+	*/
+	
+	void addEdge(int from, int to, int dist) {
+		edges.push_back((Edge){from, to, dist});
+		m = edges.size();
+		G[from].push_back(m-1);
+	}
+	
+	void dijkstra(int s) {
+		priority_queue<HeapNode> Q;
+		for(int i=0; i<=n; i++) d[i] = INF;
+		d[s]=0;
+		memset(vis, 0, sizeof(vis));
+		Q.push((HeapNode){0, s});
+		while(!Q.empty()) {
+			HeapNode x = Q.top(); Q.pop();
+			int u = x.u;
+			if(vis[u]) continue;
+			vis[u] = true;
+			for(int i=0; i<G[u].size(); i++) {
+				Edge & e = edges[G[u][i]];
+				if(d[e.to] > d[u] + e.dist) {
+					d[e.to] = d[u] + e.dist;
+					//p[e.to] = G[u][i];
+					Q.push((HeapNode){d[e.to], e.to});
+				}
+			}
+		}
+	}
+}D;
+```
+
+## C组合数板子
+
+时间复杂度O(2^n)
+
+```c++
+/*
+  Version: 1.0
+  Author: 王峰
+  Date: 2018.9.17
+*/
+C[1][0] = C[1][1] = 1;
+for (int i = 2; i < N; i++){
+	C[i][0] = 1;
+	for (int j = 1; j < N; j++)
+		C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]);
 }
 ```
+
+## 容斥原理
+
+时间复杂度O(n^2)
+
+```c++
+ll ans = 0;
+for(int i=0; i<(1<<tot); i++) {
+
+	int cnt = 0;
+	for(int j=0; j<tot; j++) {
+		if(i&(1<<j)) cnt++;
+    }
+
+    ll tmp = 0;
+
+        /*
+            得到当前状态下的贡献值
+        */
+
+    if(cnt&1) {
+    	ans ++ tmp;
+    } else {
+    	ans -= tmp;
+    }
+}
+```
+
+
 
 ## some else algorithm
 
