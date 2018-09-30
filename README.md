@@ -537,6 +537,123 @@ struct BellmanFord {
 };
 ```
 
+## hlpp
+最大流-最强算法，时间复杂度Ｏ(|E|^2*sqrt(|V|))
+最高标号预流推进算法High Level Preflow Push
+
+```c++
+/*
+  copy from https://blog.csdn.net/KirinBill/article/details/60882828
+  有时间的话参照算法自己实现一遍
+*/
+#include <cstdio>
+#include <queue>
+#include <cstring>
+using namespace std;
+#define min(a,b) (a<b ? a:b)
+
+const int MAXN=305,MAXM=100005,INF=~0U>>1;
+int cnt,head[MAXN];
+bool vis[MAXN];
+
+struct line{
+    int to,next,cap;
+    line(){
+        next=-1;
+    }
+}edge[MAXM];
+
+struct data{
+    int x,h,ef;
+    friend bool operator< (const data &a,const data &b){
+        return a.h<b.h;
+    }
+}node[MAXN];
+
+priority_queue<data> q;
+queue<int> tmpq;
+
+inline void add(int u,int v,int w){
+    edge[cnt].next=head[u];
+    head[u]=cnt;
+    edge[cnt].to=v;
+    edge[cnt].cap=w;
+    ++cnt;
+}
+
+void bfs(int t){
+    tmpq.push(t);
+    vis[t]=true;
+    int u,v;
+    while(tmpq.size()){
+        u=tmpq.front();
+        for(int i=head[u];i!=-1;i=edge[i].next){
+            v=edge[i].to;
+            if(!vis[v]){
+                node[v].h=node[u].h+1;
+                tmpq.push(v);
+                vis[v]=true;
+            }
+        }
+        tmpq.pop();
+    }
+}
+
+int hlpp(int n,int s,int t){
+    for(int i=1;i<=n;++i)
+        node[i].x=i;
+    bfs();
+    data tmp;
+    int u,v,f,tmph;
+    for(int i=head[s];i!=-1;i=edge[i].next){
+        v=edge[i].to;
+        edge[i^1].cap+=edge[i].cap;
+        node[v].ef+=edge[i].cap;
+        edge[i].cap=0;
+        q.push(node[v]);
+    }
+    node[s].h=n;
+    while(q.size()){
+        tmp=q.top();
+        q.pop();
+        u=tmp.x;
+        tmph=INF;
+        for(int i=head[u];i!=-1 && node[u].ef;i=edge[i].next){
+            v=edge[i].to;
+            if(edge[i].cap){
+                if(node[u].h==node[v].h+1){
+                    if(v!=s && v!=t && node[v].ef==0)
+                        q.push(node[v]);
+                    f=min(edge[i].cap,node[u].ef);
+                    edge[i].cap-=f;
+                    edge[i^1].cap+=f;
+                    node[u].ef-=f;
+                    node[v].ef+=f;
+                }
+                else tmph=min(tmph,node[v].h);
+            }
+        if(node[u].ef){
+            node[u].h=tmph+1;
+            q.push(node[u]);
+        }
+    }
+    return node[t].ef;
+}
+
+int main(){
+    memset(head,-1,sizeof(head));
+    int n,m,s,t,tmpu,tmpv,tmpw;
+    scanf("%d%d%d%d",&n,&m,&s,&t);
+    for(int i=1;i<=m;++i){
+        scanf("%d%d%d",&tmpu,&tmpv,&tmpw);
+        add(tmpu,tmpv,tmpw);
+        add(tmpv,tmpu,tmpw);
+    }
+    printf("%d",hlpp(n,s,t));
+    return 0;
+}
+```
+
 
 ## C组合数板子
 
