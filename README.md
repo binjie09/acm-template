@@ -480,7 +480,8 @@ using namespace std;
 const int maxn = 1e5+7;
 
 struct Edge {
-    int from, to, dist;
+    int from, to;
+    double dist;
 };
 
 struct BellmanFord {
@@ -488,7 +489,7 @@ struct BellmanFord {
     vector<Edge> edges;
     vector<int> G[maxn];
     bool inq[maxn];
-    int d[maxn];
+    double d[maxn];
     int p[maxn];
     int cnt[maxn];
 
@@ -500,7 +501,7 @@ struct BellmanFord {
         edges.clear();
     }
 
-    void AddEdge(int from, int to, int dist) {
+    void AddEdge(int from, int to, double dist) {
         edges.push_back((Edge){from, to, dist});
         m = edges.size();
         G[from].push_back(m-1);
@@ -510,8 +511,8 @@ struct BellmanFord {
         queue<int> Q;
         memset(inq, 0, sizeof(inq));
         memset(cnt, 0, sizeof(cnt));
-        for(int i=0; i<n; i++) {
-            d[i]=0; 
+        for(int i=1; i<=n; i++) {
+            d[i]=0;
             inq[0]=true;
             Q.push(i);
         }
